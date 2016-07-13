@@ -28,53 +28,35 @@ class Zmq
     }
 
     /**
-     * @param string $name
+     * @param string $connection
      * @return \ZMQSocket
      */
-    public function connection($name = 'default', $type = \ZMQ::SOCKET_REQ)
+    public function connection($connection = null)
     {
 
-
-        if ($connection  = array_get($this->connections, $name)) {
-            $type        = array_get($connection, 'type', $type);
-            $method      = array_get($connection, 'method', 'connect');
-            $dsn         = array_get($connection, 'dsn', 'tcp://127.0.0.1:5555');
-            $persistent  = array_get($connection, 'peristent', true);
-            $ioThreads   = array_get($connection, 'io_threads', 10);
-            
-            $context = new \ZMQContext(19, false);
-
-            $socket  = new \ZMQSocket($context, $type, self::$sockets, function($socket, &$id) {
-                Zmq::$sockets++;
-            });
-
-            if(method_exists($socket, $method)) {
-                dump($name, $method, $dsn);
-                //return $socket->$method($dsn, true);
-                
-                return $socket;
-            } else {
-                throw new \ZMQException(sprintf('connection method not implemented: "%s"', $method));
-            }
-        } else {
-            throw new \ZMQException(sprintf('unkown connection name: "%s"', $name));
+        if(!$connection) {
+            $connection = \Config::get('zmg.default');
         }
-
+        
+        return \App::make(sprintf('zmq.connection.%s', $connection))->connect();
     }
 
     /**
      * @param array $channels
      * @param \Closure $callback
-     * @param null $connection
-     * @throws \Exception
+     * @param string $connection
      */
     public function subscribe(array $channels, \Closure $callback, $connection = 'subscribe')
     {
 
-        $connection = $this->connection($connection, \ZMQ::SOCKET_SUB)->bind('tcp://*:5552', true);
+        $connection = $this->connection($connection);
 
         foreach ($channels as $channel) {
             $connection->setSockOpt(\ZMQ::SOCKOPT_SUBSCRIBE, $channel);
+
+            \Log::debug('zmq.subscribe', [
+                'channel' => $channel
+            ]);
         }
 
         while (true) {
@@ -88,16 +70,39 @@ class Zmq
                 $payload = [$payload];
             }
 
-            \Log::debug('zmq.broadcast.recieved', [
-                'channel' => $channel,
-                'payload' => $payload
-            ]);
 
             call_user_func($callback, $payload, $channel);
 
             usleep(10);
 
+        }
+    }
 
+    /**
+     * @param array $channels
+     * @param $event
+     * @param array $payload
+     * @param string $connection
+     */
+    public function publish(array $channels, $event, $payload = [], $connection = 'publish')
+    {
+        $connection = $this->connection($connection);
+
+        if($payload) {
+            $payload = json_encode(['event' => $event, 'payload' => $payload]);
+        } else {
+            $payload = $event;
+        }
+
+
+        foreach($channels as $channel) {
+
+            \Log::debug('zmq.publish', [
+                'channel' => $channel,
+                'payload' => $payload
+            ]);
+
+            $connection->send($channel, \ZMQ::MODE_SNDMORE)->send($payload);
         }
     }
 

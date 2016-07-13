@@ -3,6 +3,7 @@
 namespace Pelim\LaravelZmq\Broadcasting\Broadcaster;
 
 use Illuminate\Contracts\Broadcasting\Broadcaster;
+use Pelim\LaravelZmq\Connector\ZmqConnector;
 use Pelim\LaravelZmq\Zmq;
 
 /**
@@ -16,21 +17,15 @@ class ZmqBroadcaster implements Broadcaster
      * @var Zmq
      */
     protected $zmq;
-
-    /**
-     * @var string
-     */
-    protected $connection;
+    
 
     /**
      * ZmqBroadcaster constructor.
      * @param Zmq $zmq
-     * @param null $connection
      */
-    public function __construct(Zmq $zmq, $connection = 'publish')
+    public function __construct(Zmq $zmq)
     {
-        $this->zmq        = $zmq;
-        $this->connection = $connection;
+        $this->zmq = $zmq;
     }
     
     /**
@@ -38,25 +33,6 @@ class ZmqBroadcaster implements Broadcaster
      */
     public function broadcast(array $channels, $event, array $payload = [])
     {
-        $zmq = $this->zmq->connection($this->connection, \ZMQ::SOCKET_PUB)->connect('tcp://127.0.0.1:5552', true);
-
-        dump($zmq->getEndpoints());
-
-        if($payload) {
-            $payload = json_encode(['event' => $event, 'payload' => $payload]);
-        } else {
-            $payload = $event;
-        }
-
-
-        foreach($channels as $channel) {
-            
-            \Log::debug('zmq.broadcast', [
-                'channel' => $channel,
-                'payload' => $payload
-            ]);
-
-            $zmq->send($channel, \ZMQ::MODE_SNDMORE)->send($payload);
-        }
+        $this->zmq->publish($channels, $event, $payload, 'publish');
     }
 }

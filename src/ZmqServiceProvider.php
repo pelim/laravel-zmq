@@ -4,6 +4,8 @@ namespace Pelim\LaravelZmq;
 
 use Illuminate\Support\ServiceProvider;
 use Pelim\LaravelZmq\Broadcasting\Broadcaster\ZmqBroadcaster;
+use Pelim\LaravelZmq\Connector\ZmqPublish;
+use Pelim\LaravelZmq\Connector\ZmqSubscribe;
 
 /**
  * Class ZmqServiceProvider
@@ -17,22 +19,29 @@ class ZmqServiceProvider extends ServiceProvider {
 		$this->publishes([__DIR__ .'/../config/zmq.php' => config_path('zmq.php')]);
 
 		$this->app->make('Illuminate\Contracts\Broadcasting\Factory')->extend('zmq', function ($app) {
-				return new ZmqBroadcaster($this->app['zmq'],
-					array_get($app['config'], 'broadcasting.connections.zmq.connection')
-				);
+				return new ZmqBroadcaster($this->app['zmq']);
 			});
 	}
 	
 	public function register() {
+
 		$this->app->singleton('zmq', function ($app) {
-				return new Zmq(config('zmq.connections'));
-			});
+			return new Zmq();
+		});
+		
+		$this->app->singleton('zmq.connection.publish', function ($app) {
+			return new ZmqPublish();
+		});
+
+		$this->app->singleton('zmq.connection.subscribe', function ($app) {
+			return new ZmqSubscribe();
+		});
 	}
 
 	/**
 	 * @return array
 	 */
 	public function provides() {
-		return ['zmq'];
+		return ['zmq', 'zmq.connection.subscribe', 'zqm.connection.publish'];
 	}
 }
