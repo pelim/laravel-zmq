@@ -10,7 +10,8 @@
     ],
     "require": {
         "ext-zmq": "*",
-        "illuminate/broadcasting": "5.2.*"
+        "illuminate/broadcasting": "5.2.*",
+        "illuminate/contracts": "5.2.*"
     },
     "autoload": {
         "psr-4": {
