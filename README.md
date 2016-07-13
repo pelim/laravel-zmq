@@ -7,5 +7,8 @@
 
 ## Installtion
 include the service provider into your laravel app
-run vendor:publish
+
+
+`php artisan vendor:publish `
+
 
