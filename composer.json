@@ -1,0 +1,20 @@
+{
+    "name": "pelim/laravel-zmq",
+    "description": "zmq support for Laravel5",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "pelim",
+            "email": "peter.limbach@gmail.com"
+        }
+    ],
+    "require": {
+        "ext-zmq": "*",
+        "illuminate/broadcasting": "5.2.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pelim\\LaravelZmq\\": "src/"
+        }
+    }
+}
