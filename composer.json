@@ -8,6 +8,7 @@
             "email": "peter.limbach@gmail.com"
         }
     ],
+
     "require": {
         "ext-zmq": "*",
         "illuminate/broadcasting": "5.2.*",
@@ -17,5 +18,7 @@
         "psr-4": {
             "Pelim\\LaravelZmq\\": "src/"
         }
-    }
+    },
+  "minimum-stability": "dev",
+  "prefer-stable": false
 }
