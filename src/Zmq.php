@@ -35,9 +35,9 @@ class Zmq
     {
 
         if(!$connection) {
-            $connection = \Config::get('zmg.default');
+            $connection = \Config::get('zmq.default');
         }
-        
+
         return \App::make(sprintf('zmq.connection.%s', $connection))->connect();
     }
 
