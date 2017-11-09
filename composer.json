@@ -18,6 +18,13 @@
             "Pelim\\LaravelZmq\\": "src/"
         }
     },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Pelim\\LaravelZmq\\ZmqServiceProvider"
+            ]
+        }
+    },
     "minimum-stability": "dev",
     "prefer-stable": false
 }
