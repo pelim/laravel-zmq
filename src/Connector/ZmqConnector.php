@@ -6,8 +6,8 @@ namespace Pelim\LaravelZmq\Connector;
  * Class ZmqConnector
  * @package Pelim\LaravelZmq\Connector
  */
-abstract class ZmqConnector {
-
+abstract class ZmqConnector
+{
     protected $connection;
 
     public function __construct($connection)
