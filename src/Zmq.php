@@ -92,7 +92,7 @@ class Zmq
 
         foreach ($channels as $channel) {
             \Log::debug('zmq.publish', [
-                'channel' => $channel,
+                'channel' => $channel->name,
                 'payload' => $payload
             ]);
 
