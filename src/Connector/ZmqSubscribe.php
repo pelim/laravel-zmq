@@ -25,7 +25,8 @@ class ZmqSubscribe extends ZmqConnector
     public function connect()
     {
         $context = new \ZMQContext();
-        $socket  = $context->getSocket(config("zmq.{$this->connection}.method", \ZMQ::SOCKET_SUB));
+        $socket_method = \Config::get(sprintf('zmq.connections.%s.method', $this->connection), \ZMQ::SOCKET_SUB);
+        $socket  = $context->getSocket($socket_method);
         $socket->bind($this->dsn());
 
         return $socket;
