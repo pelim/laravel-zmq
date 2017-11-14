@@ -11,7 +11,8 @@
     "require": {
         "ext-zmq": "*",
         "illuminate/broadcasting": "5.5.*",
-        "illuminate/contracts": "5.5.*"
+        "illuminate/contracts": "5.5.*",
+        "illuminate/http": "5.5.*"
     },
     "autoload": {
         "psr-4": {

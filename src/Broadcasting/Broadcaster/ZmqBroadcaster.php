@@ -3,7 +3,7 @@
 namespace Pelim\LaravelZmq\Broadcasting\Broadcaster;
 
 use Pelim\LaravelZmq\Zmq;
-use \Illuminate\Http\Request;
+use Illuminate\Http\Request;
 use Pelim\LaravelZmq\Connector\ZmqConnector;
 use Illuminate\Broadcasting\Broadcasters\Broadcaster;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -14,12 +14,10 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
  */
 class ZmqBroadcaster extends Broadcaster
 {
-
     /**
      * @var Zmq
      */
     protected $zmq;
-
 
     /**
      * ZmqBroadcaster constructor.
@@ -38,6 +36,13 @@ class ZmqBroadcaster extends Broadcaster
         $this->zmq->publish($channels, $event, $payload, 'publish');
     }
 
+    /**
+     * Authenticate the incoming request for a given channel.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return mixed
+     * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
+     */
     public function auth($request)
     {
         if (Str::startsWith($request->channel_name, ['private-', 'presence-']) &&
@@ -55,21 +60,22 @@ class ZmqBroadcaster extends Broadcaster
         );
     }
 
+    /**
+     * Return the valid authentication response.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $result
+     * @return mixed
+     */
     public function validAuthenticationResponse($request, $result)
     {
-        if (Str::startsWith($request->channel_name, 'private')) {
-            return $this->decodePusherResponse(
-                $this->pusher->socket_auth($request->channel_name, $request->socket_id)
-            );
+        if (is_bool($result)) {
+            return json_encode($result);
         }
 
-        return $this->decodePusherResponse(
-            $this->pusher->presence_auth(
-                $request->channel_name,
-                $request->socket_id,
-                $request->user()->getAuthIdentifier(),
-                $result
-            )
-        );
+        return json_encode(['channel_data' => [
+            'user_id' => $request->user()->getAuthIdentifier(),
+            'user_info' => $result,
+        ]]);
     }
 }
