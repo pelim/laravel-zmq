@@ -34,10 +34,10 @@ class Zmq
     public function connection($connection = null)
     {
 
-        if(!$connection) {
-            $connection = \Config::get('zmg.default');
+        if (! $connection) {
+            $connection = \Config::get('zmq.default');
         }
-        
+
         return \App::make(sprintf('zmq.connection.%s', $connection))->connect();
     }
 
@@ -48,7 +48,6 @@ class Zmq
      */
     public function subscribe(array $channels, \Closure $callback, $connection = 'subscribe')
     {
-
         $connection = $this->connection($connection);
 
         foreach ($channels as $channel) {
@@ -60,7 +59,6 @@ class Zmq
         }
 
         while (true) {
-
             $channel = $connection->recv();
             $payload = $connection->recv();
 
@@ -70,11 +68,9 @@ class Zmq
                 $payload = [$payload];
             }
 
-
             call_user_func($callback, $payload, $channel);
 
             usleep(10);
-
         }
     }
 
@@ -88,22 +84,19 @@ class Zmq
     {
         $connection = $this->connection($connection);
 
-        if($payload) {
+        if ($payload) {
             $payload = json_encode(['event' => $event, 'payload' => $payload]);
         } else {
             $payload = $event;
         }
 
-
-        foreach($channels as $channel) {
-
+        foreach ($channels as $channel) {
             \Log::debug('zmq.publish', [
-                'channel' => $channel,
+                'channel' => $channel->name,
                 'payload' => $payload
             ]);
 
             $connection->send($channel, \ZMQ::MODE_SNDMORE)->send($payload);
         }
     }
-
 }

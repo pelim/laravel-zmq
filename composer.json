@@ -1,6 +1,6 @@
 {
     "name": "pelim/laravel-zmq",
-    "description": "zmq support for Laravel5",
+    "description": "A ZeroMQ broadcast driver for Laravel 5",
     "license": "MIT",
     "authors": [
         {
@@ -8,17 +8,24 @@
             "email": "peter.limbach@gmail.com"
         }
     ],
-
     "require": {
         "ext-zmq": "*",
-        "illuminate/broadcasting": "5.2.*",
-        "illuminate/contracts": "5.2.*"
+        "illuminate/broadcasting": "5.5.*",
+        "illuminate/contracts": "5.5.*",
+        "illuminate/http": "5.5.*"
     },
     "autoload": {
         "psr-4": {
             "Pelim\\LaravelZmq\\": "src/"
         }
     },
-  "minimum-stability": "dev",
-  "prefer-stable": false
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Pelim\\LaravelZmq\\ZmqServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": false
 }

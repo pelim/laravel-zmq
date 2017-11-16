@@ -1,18 +1,36 @@
-# laravel-zmq
+# Laravel ZeroMQ
 
-subscribe laravel worker to zmq notifications i.e to verify btcoind tx 
+A Laravel wrapper for `ext-zmq` that exposes a `zmq` broadcast driver to publish your Laravel events via ZeroMQ.
 
 ## Requirements
-* zmq php ext
-* laravel 5.2
 
+- PHP 7.1
+- Laravel 5.5
+- ZeroMQ
+- ext-zmq for PHP
 
 ## Installation
-include the service provider into your laravel app
 
+```bash
+$ composer require pelim/laravel-zmq
+```
 
-`php artisan vendor:publish`
+The service provider is loaded automatically in Laravel 5.5 using Package Autodiscovery.
 
+Publish vendor files to create your `config/zmq.php` file
 
+```bash
+$ php artisan vendor:publish --provider="Pelim\ZmqServiceProvider"
+```
 
+Update your `config/zmq.php` with the appropriate socket details.
 
+Set `BROADCASTING_DRIVER=zmq` in your `.env` and add the following ZeroMQ connection settings to your `config/broadcasting.php`:
+
+```php
+'connections' => [
+    'zmq' => [
+        'driver' => 'zmq',
+    ],
+]
+```
