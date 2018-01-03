@@ -25,7 +25,7 @@ $ php artisan vendor:publish --provider="Pelim\ZmqServiceProvider"
 
 Update your `config/zmq.php` with the appropriate socket details.
 
-Set `BROADCASTING_DRIVER=zmq` in your `.env` and add the following ZeroMQ connection settings to your `config/broadcasting.php`:
+Set `BROADCAST_DRIVER=zmq` in your `.env` and add the following ZeroMQ connection settings to your `config/broadcasting.php`:
 
 ```php
 'connections' => [
