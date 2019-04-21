@@ -33,7 +33,20 @@ class ZmqBroadcaster extends Broadcaster
      */
     public function broadcast(array $channels, $event, array $payload = [])
     {
-        $this->zmq->publish($channels, $event, $payload, 'publish');
+        $publish_config = \Config::get('zmq.connections.publish');
+
+        if(!isset($publish_config))
+            return;
+
+        if(array_keys($publish_config) !== range(0, count($publish_config) - 1)){
+            // single publish endpoint config
+            $this->zmq->publish($channels, $event, $payload, 'publish');
+        } else {
+            // multiple publish endpoint config
+            foreach ($publish_config as $index => $publish_endpoint){
+                $this->zmq->publish($channels, $event, $payload, 'publish', $index);
+            }
+        }
     }
 
     /**

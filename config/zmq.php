@@ -6,8 +6,10 @@ return [
     'connections' => [
 
         'publish' => [
-            'dsn'       => 'tcp://127.0.0.1:5555',
-            'method'    => \ZMQ::SOCKET_PUB,
+            0 => [
+                'dsn'       => 'tcp://127.0.0.1:5555',
+                'method'    => \ZMQ::SOCKET_PUB,
+            ]
         ],
 
         'subscribe' => [

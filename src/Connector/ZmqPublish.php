@@ -19,10 +19,15 @@ class ZmqPublish extends ZmqConnector
 
     /**
      * Connect to the socket for publishing.
+     * @param null $index
      * @return \ZMQSocket
+     * @throws \ZMQSocketException
      */
-    public function connect()
+    public function connect($index = null)
     {
+        if(isset($index))
+            $this->connection = 'publish.'.$index;
+
         $context = new \ZMQContext();
         $socket_method = \Config::get(sprintf('zmq.connections.%s.method', $this->connection), \ZMQ::SOCKET_PUB);
         $socket = $context->getSocket($socket_method);

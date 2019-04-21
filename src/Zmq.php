@@ -28,17 +28,18 @@ class Zmq
     }
 
     /**
-     * @param string $connection
+     * @param null $connection
+     * @param null $index
      * @return \ZMQSocket
      */
-    public function connection($connection = null)
+    public function connection($connection = null, $index = null)
     {
 
         if (! $connection) {
             $connection = \Config::get('zmq.default');
         }
 
-        return \App::make(sprintf('zmq.connection.%s', $connection))->connect();
+        return \App::make(sprintf('zmq.connection.%s', $connection))->connect($index);
     }
 
     /**
@@ -79,10 +80,11 @@ class Zmq
      * @param $event
      * @param array $payload
      * @param string $connection
+     * @param null $index
      */
-    public function publish(array $channels, $event, $payload = [], $connection = 'publish')
+    public function publish(array $channels, $event, $payload = [], $connection = 'publish', $index = null)
     {
-        $connection = $this->connection($connection);
+        $connection = $this->connection($connection, $index);
 
         if ($payload) {
             $payload = json_encode(['event' => $event, 'payload' => $payload]);
