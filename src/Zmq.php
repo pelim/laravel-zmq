@@ -52,10 +52,12 @@ class Zmq
 
         foreach ($channels as $channel) {
             $connection->setSockOpt(\ZMQ::SOCKOPT_SUBSCRIBE, $channel);
-
-            \Log::debug('zmq.subscribe', [
-                'channel' => $channel
-            ]);
+            if(\Config::get("zmq.debug_logs") == true)
+            {
+                \Log::debug('zmq.subscribe', [
+                    'channel' => $channel
+                ]);   
+            }            
         }
 
         while (true) {
@@ -91,10 +93,14 @@ class Zmq
         }
 
         foreach ($channels as $channel) {
-            \Log::debug('zmq.publish', [
-                'channel' => $channel->name,
-                'payload' => $payload
-            ]);
+
+            if(\Config::get("zmq.debug_logs") == true)
+            {
+                \Log::debug('zmq.publish', [
+                    'channel' => $channel->name,
+                    'payload' => $payload
+                ]);
+            }            
 
             $connection->send($channel, \ZMQ::MODE_SNDMORE)->send($payload);
         }
