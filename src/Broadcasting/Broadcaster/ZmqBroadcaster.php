@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Pelim\LaravelZmq\Connector\ZmqConnector;
 use Illuminate\Broadcasting\Broadcasters\Broadcaster;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Illuminate\Support\Str;
 
 /**
  * Class ZmqBroadcaster
