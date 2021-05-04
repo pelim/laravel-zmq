@@ -33,12 +33,11 @@ class Zmq
      */
     public function connection($connection = null)
     {
-
         if (! $connection) {
             $connection = \Config::get('zmq.default');
         }
 
-        return \App::make(sprintf('zmq.connection.%s', $connection))->connect();
+        return \App::make(sprintf('zmq.connection.%s', $connection))->socket;
     }
 
     /**
