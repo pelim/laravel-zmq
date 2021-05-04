@@ -23,7 +23,7 @@ class ZmqPublish extends ZmqConnector
      */
     public function connect()
     {
-        $context = new \ZMQContext();
+        $context = new \ZMQContext(1, true);
         $socket_method = \Config::get(sprintf('zmq.connections.%s.method', $this->connection), \ZMQ::SOCKET_PUB);
         $socket = $context->getSocket($socket_method);
         $socket->connect($this->dsn());

@@ -10,15 +10,29 @@ abstract class ZmqConnector
 {
     protected $connection;
 
+    /**
+     * @var \ZMQContext
+     */
+    public $socket;
+
     public function __construct($connection)
     {
         $this->connection = $connection;
+        $this->socket =  $this->connect();
     }
 
     /**
      * @return \ZMQSocket
      */
     abstract public function connect();
+
+    public function getSocket()
+    {
+        if(is_null($this->socket)) {
+            $this->socket = $this->connect();
+        }
+        return $this->socket;
+    }
 
     protected function dsn()
     {
