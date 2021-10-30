@@ -79,4 +79,22 @@ class ZmqBroadcaster extends Broadcaster
             'user_info' => $result,
         ]]);
     }
+
+    /**
+     * Authenticate the incoming request for a given channel.
+     * Make this function available from external calls
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $channel
+     * @return mixed
+     *
+     * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
+     */
+    public function verifyUserCanAccessChannel($request, $channelName)
+    {
+        return parent::verifyUserCanAccessChannel(
+            $request,
+            $channelName
+        );
+    }
 }
